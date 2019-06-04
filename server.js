@@ -21,6 +21,7 @@
 const express = require('express');
 const fetch = require('node-fetch');
 const redirectToHTTPS = require('express-http-to-https').redirectToHTTPS;
+const compression = require('compression');
 
 // CODELAB: Change this to add a delay (ms) before the server responds.
 const FORECAST_DELAY = 0;
@@ -140,7 +141,7 @@ function generateFakeForecast(location) {
  */
 function getForecast(req, resp) {
   const location = req.params.location || '40.7720232,-73.9732319';
-  const url = `${BASE_URL}/${API_KEY}/${location}`;
+  const url = `${BASE_URL}/${API_KEY}/${location}?units=si&lang=da`;
   fetch(url).then((resp) => {
     return resp.json();
   }).then((data) => {
@@ -160,6 +161,7 @@ function getForecast(req, resp) {
  */
 function startServer() {
   const app = express();
+  app.use(compression ());
 
   // Redirect HTTP to HTTPS,
   app.use(redirectToHTTPS([/localhost:(\d{4})/], [], 301));
